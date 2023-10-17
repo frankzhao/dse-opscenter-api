@@ -5,6 +5,8 @@ Modified script to define a cluster in DSE OpsCenter LCM
 2. Install python dependencies: `pip install -r requirements.txt`.
 3. Run script: `python main.py`
 
+Optionally, specify a config file to use: `main.py -f config/sample_config.yaml`
+
 ---
 
 # dse-opscenter-api-examples

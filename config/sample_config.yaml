@@ -1,14 +1,13 @@
-core:
-  logging:
-    level: INFO
+opscenter:
+  opscenter_username: "admin"
+  opscenter_password: "opscenter"
+  opscenter_server_ip: "10.1.1.1"
+
 dse:
   cluster_name: "cluster"
   datastax_version: "6.8.36"
   repository_name: "python"
   config_profile_name: "python"
-  opscenter_username: "admin"
-  opscenter_password: "opscenter"
-  opscenter_server_ip: "10.1.1.1"
   install_credential_name: "python"
   install_credential_username: "ubuntu"
   install_credential_key_file: "SAMPLE KEY"
