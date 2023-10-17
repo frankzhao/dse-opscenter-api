@@ -22,22 +22,29 @@ config = OpsCenterConfiguration()
 config.load_config(args.config)
 
 if args.debug:
-  logging.basicConfig(level=logging.DEBUG)
+  logging.basicConfig(format='%(asctime)s %(message)s', level=logging.DEBUG)
 else:
-  logging.basicConfig(level=logging.INFO)
+  logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
 
+logging.info("Logging in to Opscenter as user=%s", config.username)
 session_id = common.get_session_token(config)
 
+logging.info("Creating repository=%s", config.repository_name)
 repo_id = create_repo(session_id, config)
+logging.info("Creating credential=%s", config.install_credential_name)
 credential_id = create_credential(session_id, config)
 for config_profile in config.config_profiles:
+  logging.info("Creating config_profile=%s", config_profile.name)
   create_config_profile(session_id, config, config_profile)
 
+logging.info("Creating cluster=%s", config.cluster_name)
 cluster_id = create_cluster(session_id, config, repo_id, credential_id, config.config_profile_name)
 
 for datacenter_config in config.datacenter_configuration:
+  logging.info("Creating datacenter=%s", datacenter_config.name)
   datacenter_id = create_datacenter(session_id, cluster_id, config, datacenter_config)
   for node_config in datacenter_config.node_configuration:
+    logging.info("Adding node to datacenter=%s, node=%s", datacenter_config.name, node_config.name)
     node_id = create_nodes(session_id, config, datacenter_config, datacenter_id, node_config)
 
 # Add nodes
