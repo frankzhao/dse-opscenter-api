@@ -13,3 +13,16 @@ dse:
   install_credential_username: "ubuntu"
   install_credential_key: "SAMPLE KEY"
   cassandra_default_password: "cassandra"
+
+cluster:
+  datacenters:
+    - name: "dc1"
+      solr_enabled: false
+      spark_enabled: false
+      graph_enabled: false
+      hadoop_enabled: false
+    - name: "dc2"
+      solr_enabled: true
+      spark_enabled: false
+      graph_enabled: false
+      hadoop_enabled: false

@@ -1,7 +1,9 @@
 import json
-import os
 import logging
+import os
+
 import requests
+
 from config import OpsCenterConfiguration
 
 

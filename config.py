@@ -1,5 +1,6 @@
 from pyconfigparser import configparser, ConfigError
 from schema import Use, And
+from typing import List
 
 SCHEMA_CONFIG = {
     'core': {
@@ -20,7 +21,31 @@ SCHEMA_CONFIG = {
         'install_credential_key': And(Use(str), lambda string: len(string) > 0),
         'cassandra_default_password': And(Use(str), lambda string: len(string) > 0),
     },
+    'cluster': {
+        'datacenters': [{
+            'name': And(Use(str), lambda string: len(string) > 0),
+            'solr_enabled': And(Use(bool)),
+            'spark_enabled': And(Use(bool)),
+            'graph_enabled': And(Use(bool)),
+            'hadoop_enabled': And(Use(bool)),
+        }]
+    }
 }
+
+
+class DatacenterConfiguration:
+    name = None
+    solr_enabled = None
+    spark_enabled = None
+    graph_enabled = None
+    hadoop_enabled = None
+
+    def __init__(self, name, solr_enabled, spark_enabled, graph_enabled, hadoop_enabled):
+        self.name = name
+        self.solr_enabled = solr_enabled
+        self.spark_enabled = spark_enabled
+        self.graph_enabled = graph_enabled
+        self.hadoop_enabled = hadoop_enabled
 
 
 class OpsCenterConfiguration:
@@ -36,6 +61,8 @@ class OpsCenterConfiguration:
     install_credential_username = None
     install_credential_key = None
     cassandra_default_password = None
+
+    datacenter_configuration: List[DatacenterConfiguration] = None
 
     def load_config(self):
         # .config/config.yaml
@@ -53,6 +80,18 @@ class OpsCenterConfiguration:
             self.install_credential_name = config['dse']['install_credential_name']
             self.install_credential_username = config['dse']['install_credential_username']
             self.cassandra_default_password = config['dse']['cassandra_default_password']
+
+            # Initialise datacenter configurations
+            datacenters = []
+            for datacenter in config['cluster']['datacenters']:
+                datacenters += [DatacenterConfiguration(
+                    datacenter['name'],
+                    datacenter['solr_enabled'],
+                    datacenter['spark_enabled'],
+                    datacenter['graph_enabled'],
+                    datacenter['hadoop_enabled'],
+                )]
+            self.datacenter_configuration = datacenters
         except ConfigError as e:
             print(e)
             exit()
