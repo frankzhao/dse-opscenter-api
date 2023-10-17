@@ -29,6 +29,8 @@ def do_get(config: OpsCenterConfiguration, session_id, url):
     base_url = 'http://%s:8888/api/v2/lcm/' % config.server_ip
     result = requests.get(base_url + url,
                           headers={'Content-Type': 'application/json', 'opscenter-session': session_id})
+    if result.status_code != 200:
+        logging.error("OpsCenter API request failed: %s", result.text)
     logging.debug("%s", result.text)
     result_data = json.loads(result.text)
     return result_data
@@ -39,6 +41,8 @@ def do_post(config: OpsCenterConfiguration, session_id, url, post_data):
     result = requests.post(base_url + url,
                            data=json.dumps(post_data),
                            headers={'Content-Type': 'application/json', 'opscenter-session': session_id})
+    if result.status_code != 200:
+        logging.error("OpsCenter API request failed: %s", result.text)
     logging.debug("%s", result.text)
     result_data = json.loads(result.text)
     return result_data

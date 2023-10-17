@@ -30,15 +30,15 @@ session_id = common.get_session_token(config)
 
 repo_id = create_repo(session_id, config)
 credential_id = create_credential(session_id, config)
-config_profile_id = create_config_profile(session_id, config)
-cluster_id = create_cluster(session_id, config, repo_id, credential_id,
-                            config_profile_id)
+for config_profile in config.config_profiles:
+  create_config_profile(session_id, config, config_profile)
+
+cluster_id = create_cluster(session_id, config, repo_id, credential_id, config.config_profile_name)
 
 for datacenter_config in config.datacenter_configuration:
-  datacenter_id = create_datacenter(session_id, cluster_id, config,
-                                    datacenter_config)
+  datacenter_id = create_datacenter(session_id, cluster_id, config, datacenter_config)
   for node_config in datacenter_config.node_configuration:
-    node_id = create_nodes(session_id, config, datacenter_id, node_config)
+    node_id = create_nodes(session_id, config, datacenter_config, datacenter_id, node_config)
 
 # Add nodes
 
