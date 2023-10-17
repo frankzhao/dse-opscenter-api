@@ -19,7 +19,7 @@ SCHEMA_CONFIG = {
         'opscenter_server_ip': And(Use(str), lambda string: len(string) > 0),
         'install_credential_name': And(Use(str), lambda string: len(string) > 0),
         'install_credential_username': And(Use(str), lambda string: len(string) > 0),
-        'install_credential_key': And(Use(str), lambda string: len(string) > 0),
+        'install_credential_key_file': And(Use(str), lambda string: len(string) > 0),
         'cassandra_default_password': And(Use(str), lambda string: len(string) > 0),
     },
     'cluster': {
@@ -103,6 +103,10 @@ class OpsCenterConfiguration:
             self.install_credential_name = config['dse']['install_credential_name']
             self.install_credential_username = config['dse']['install_credential_username']
             self.cassandra_default_password = config['dse']['cassandra_default_password']
+
+            # SSH key
+            with open(config['dse']['install_credential_key_file'], 'r') as key_file:
+                self.install_credential_key = key_file.read()
 
             # Initialise datacenter configurations
             datacenters = []

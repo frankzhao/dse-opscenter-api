@@ -11,7 +11,7 @@ dse:
   opscenter_server_ip: "10.1.1.1"
   install_credential_name: "python"
   install_credential_username: "ubuntu"
-  install_credential_key: "SAMPLE KEY"
+  install_credential_key_file: "SAMPLE KEY"
   cassandra_default_password: "cassandra"
 
 cluster:
@@ -21,8 +21,18 @@ cluster:
       spark_enabled: false
       graph_enabled: false
       hadoop_enabled: false
+      nodes:
+        - name: dse1
+          private_ip: 10.1.1.1 # private_ip
+          node_ip: 10.1.1.1 # ssh_ip
+          rack: rack1
     - name: "dc2"
       solr_enabled: true
       spark_enabled: false
       graph_enabled: false
       hadoop_enabled: false
+      nodes:
+        - name: dse2
+          private_ip: 10.1.1.1 # private_ip
+          node_ip: 10.1.1.1 # ssh_ip
+          rack: rack1
