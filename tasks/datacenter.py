@@ -8,7 +8,6 @@ def create_datacenter(session_id, cluster_id, config: OpsCenterConfiguration,
                       datacenter_config: DatacenterConfiguration):
     datacenter_id = None
     datacenter_list = common.do_get(config, session_id, 'datacenters/')
-    # datacenter_config_names = [d.name for d in config.datacenter_configuration]
     for datacenter in datacenter_list['results']:
         # Check if datacenter is existing for this cluster.
         if datacenter['cluster-id'] == cluster_id and datacenter['name'] == datacenter_config.name:
@@ -28,6 +27,6 @@ def create_datacenter(session_id, cluster_id, config: OpsCenterConfiguration,
             }
         )
         dc_id = make_dc_response['id']
-        logging.info("Created datacenter, datacenter_id: %s", dc_id)
+        logging.info("Created datacenter, datacenter_id: %s, name: %s", dc_id, datacenter_config.name)
 
         return dc_id

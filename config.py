@@ -1,6 +1,7 @@
+from typing import List
+
 from pyconfigparser import configparser, ConfigError
 from schema import Use, And
-from typing import List
 
 SCHEMA_CONFIG = {
     'core': {
@@ -28,9 +29,28 @@ SCHEMA_CONFIG = {
             'spark_enabled': And(Use(bool)),
             'graph_enabled': And(Use(bool)),
             'hadoop_enabled': And(Use(bool)),
+            'nodes': [{
+                'name': And(Use(str), lambda string: len(string) > 0),
+                'private_ip': And(Use(str), lambda string: len(string) > 0),
+                'node_ip': And(Use(str), lambda string: len(string) > 0),
+                'rack': And(Use(str), lambda string: len(string) > 0),
+            }]
         }]
     }
 }
+
+
+class NodeConfiguration:
+    name = None
+    private_ip = None
+    node_ip = None
+    rack = None
+
+    def __init__(self, name, private_ip, node_ip, rack):
+        self.name = name
+        self.private_ip = private_ip
+        self.node_ip = node_ip
+        self.rack = rack
 
 
 class DatacenterConfiguration:
@@ -40,12 +60,15 @@ class DatacenterConfiguration:
     graph_enabled = None
     hadoop_enabled = None
 
-    def __init__(self, name, solr_enabled, spark_enabled, graph_enabled, hadoop_enabled):
+    node_configuration: List[NodeConfiguration] = None
+
+    def __init__(self, name, solr_enabled, spark_enabled, graph_enabled, hadoop_enabled, node_configuration):
         self.name = name
         self.solr_enabled = solr_enabled
         self.spark_enabled = spark_enabled
         self.graph_enabled = graph_enabled
         self.hadoop_enabled = hadoop_enabled
+        self.node_configuration = node_configuration
 
 
 class OpsCenterConfiguration:
@@ -84,12 +107,22 @@ class OpsCenterConfiguration:
             # Initialise datacenter configurations
             datacenters = []
             for datacenter in config['cluster']['datacenters']:
+                nodes = []
+                for node in datacenter['nodes']:
+                    nodes += [NodeConfiguration(
+                        node['name'],
+                        node['private_ip'],
+                        node['node_ip'],
+                        node['rack']
+                    )]
+
                 datacenters += [DatacenterConfiguration(
                     datacenter['name'],
                     datacenter['solr_enabled'],
                     datacenter['spark_enabled'],
                     datacenter['graph_enabled'],
                     datacenter['hadoop_enabled'],
+                    nodes
                 )]
             self.datacenter_configuration = datacenters
         except ConfigError as e:
