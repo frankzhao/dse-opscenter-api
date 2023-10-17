@@ -22,9 +22,9 @@ config = OpsCenterConfiguration()
 config.load_config(args.config)
 
 if args.debug:
-  logging.basicConfig(format='%(asctime)s %(message)s', level=logging.DEBUG)
+  logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', level=logging.DEBUG)
 else:
-  logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
+  logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', level=logging.INFO)
 
 logging.info("Logging in to Opscenter as user=%s", config.username)
 session_id = common.get_session_token(config)
