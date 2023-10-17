@@ -1,3 +1,12 @@
+Modified script to define a cluster in DSE OpsCenter LCM
+===
+
+1. Define cluster topology and configuration in `config/config.yaml`. An example has been provided in `config/sample_config.yaml`
+2. Install python dependencies: `pip install -r requirements.txt`.
+3. Run script: `python main.py`
+
+---
+
 # dse-opscenter-api-examples
 Working with the DataStax OpsCenter LCM (Lifecycle Manager) API is actually really simple. The location of the LCM API documentation can be found here: https://docs.datastax.com/en/opscenter/6.7/api/docs/lcm_overview.html
 
