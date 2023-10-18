@@ -1,3 +1,6 @@
+# Moved to [section6nz/dse-opscenter-automation](https://github.com/section6nz/dse-opscenter-automation)
+
+
 DSE OpsCenter API automation
 ===
 
