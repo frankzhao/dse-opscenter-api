@@ -17,6 +17,9 @@ SCHEMA_CONFIG = {
     'install_credential_username': And(Use(str), lambda string: len(string) > 0),
     'install_credential_key_file': And(Use(str), lambda string: len(string) > 0),
     'cassandra_default_password': And(Use(str), lambda string: len(string) > 0),
+    Optional('node_sync'): [{
+      'pattern': And(Use(str), lambda string: len(string) > 0),
+    }]
   },
   'config_profiles': [{
     'name': And(Use(str), lambda string: len(string) > 0),
@@ -94,6 +97,13 @@ class ConfigProfileConfiguration:
     self.dse_env_sh = cassandra_yaml
 
 
+class NodeSyncConfiguration:
+  pattern = None
+
+  def __init__(self, pattern):
+    self.pattern = pattern
+
+
 class OpsCenterConfiguration:
   log_level = None
   cluster_name = None
@@ -108,6 +118,7 @@ class OpsCenterConfiguration:
   install_credential_key = None
   cassandra_default_password = None
 
+  node_sync: List[NodeSyncConfiguration] = None
   config_profiles: List[ConfigProfileConfiguration] = None
   datacenter_configuration: List[DatacenterConfiguration] = None
 
@@ -137,17 +148,24 @@ class OpsCenterConfiguration:
         self.install_credential_key = key_file.read()
 
       # Initialise config profiles
-      profiles = []
-      for config_profile in config['config_profiles']:
-        profiles += [
-          ConfigProfileConfiguration(
-              config_profile['name'],
-              cassandra_yaml=config_profile['cassandra_yaml'] if 'cassandra_yaml' in config_profile else None,
-              cassandra_env_sh=config_profile['cassandra_env_sh'] if 'cassandra_env_sh' in config_profile else None,
-              dse_env_sh=config_profile['dse_env_sh'] if 'dse_env_sh' in config_profile else None
-          )
-        ]
-      self.config_profiles = profiles
+      if 'config_profiles' in config:
+        profiles = []
+        for config_profile in config['config_profiles']:
+          profiles += [
+            ConfigProfileConfiguration(
+                config_profile['name'],
+                cassandra_yaml=config_profile['cassandra_yaml'] if 'cassandra_yaml' in config_profile else None,
+                cassandra_env_sh=config_profile['cassandra_env_sh'] if 'cassandra_env_sh' in config_profile else None,
+                dse_env_sh=config_profile['dse_env_sh'] if 'dse_env_sh' in config_profile else None
+            )
+          ]
+        self.config_profiles = profiles
+
+      if 'node_sync' in config:
+        node_sync_tables = []
+        for node_sync in config['node_sync']:
+          node_sync_tables += [NodeSyncConfiguration(node_sync['pattern'])]
+        self.node_sync = node_sync_tables
 
       # Initialise datacenter configurations
       datacenters = []

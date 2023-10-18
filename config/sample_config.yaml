@@ -11,6 +11,12 @@ dse:
   install_credential_username: "ubuntu"
   install_credential_key_file: "/Users/frank/dev/dapper/opscenter.pem"
   cassandra_default_password: "cassandra"
+  node_sync:
+    - pattern: dse_analytics.*
+    - pattern: dse_leases.*
+    - pattern: dse_perf.*
+    - pattern: OpsCenter.*
+    - pattern: solr_admin.*
 
 config_profiles:
   - name: python-test
@@ -48,6 +54,6 @@ cluster:
       hadoop_enabled: false
       nodes:
         - name: dse2
-          private_ip: 10.1.1.1 # private_ip
-          node_ip: 10.1.1.1 # ssh_ip
+          private_ip: 10.1.1.2 # private_ip
+          node_ip: 10.1.1.2 # ssh_ip
           rack: rack1

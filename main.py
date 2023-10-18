@@ -9,12 +9,15 @@ from tasks.credential import create_credential
 from tasks.datacenter import create_datacenter
 from tasks.node import create_nodes
 from tasks.repo import create_repo
+from tasks.install_cluster import run_cluster_install
+from tasks.node_sync import enable_node_sync
 
 parser = argparse.ArgumentParser(
     prog='DSE OpsCenter Configuration',
     description='Set up OpsCenter LCM with configuration')
 
 parser.add_argument("--debug", help="Enable debug logging.", action='store_true')
+parser.add_argument("--install", help="Run install job.", action='store_true', default=False)
 parser.add_argument('-f', '--config', help='Location of config yaml. (default config/config.yaml)')
 args = parser.parse_args()
 
@@ -47,6 +50,9 @@ for datacenter_config in config.datacenter_configuration:
     logging.info("Adding node to datacenter=%s, node=%s", datacenter_config.name, node_config.name)
     node_id = create_nodes(session_id, config, datacenter_config, datacenter_id, node_config)
 
-# Add nodes
-
-# Run install
+# Run install job if specified
+if args.install:
+  logging.info("Running install job.")
+  job_id = run_cluster_install(config, session_id, cluster_id)
+  common.wait_for_job(session_id, config, job_id)
+  enable_node_sync(session_id, config)
